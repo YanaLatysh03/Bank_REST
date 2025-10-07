@@ -1,11 +1,11 @@
-package com.example.bankcards.dto;
+package com.example.bankcards.rs;
 
 import com.example.bankcards.entity.CardStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public record CardDto(
+public record CardInfoRs(
         Long id,
         String maskedNumber,
         LocalDate expiryDate,

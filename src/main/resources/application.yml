@@ -1,5 +1,21 @@
 #
 # application.yml — главный конфигурационный файл Spring Boot.
+security:
+  encryption-key: YanaLatyshSecretKey
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bank-rest
+    username: user1
+    password: 11111111
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  server:
+    port: 8090
+  card-number-details:
+    bank-bin: 537000
+    number-length: 16
 
 Что нужно сделать:
   - Указать настройки подключения к базе данных.

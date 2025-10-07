@@ -1,12 +1,16 @@
 package com.example.bankcards.util;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
 public class EncryptionUtil {
     private static final String ALGO = "AES";
-    private static final byte[] KEY = "MySuperSecretKey".getBytes();
+    @Value("${security.encryption-key}")
+    private static String encryptionKey;
+    private static final byte[] KEY = encryptionKey.getBytes();
 
     public static String encrypt(String data) {
         try {

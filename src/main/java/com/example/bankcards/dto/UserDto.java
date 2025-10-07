@@ -4,7 +4,8 @@ import com.example.bankcards.entity.Role;
 
 public record UserDto(
         Long id,
-        String username,
+        String email,
+        String name,
         String password,
         Role role
 ) {

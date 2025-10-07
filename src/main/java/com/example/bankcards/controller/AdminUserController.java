@@ -1,6 +1,7 @@
 package com.example.bankcards.controller;
 
 import com.example.bankcards.entity.Role;
+import com.example.bankcards.filter.AdminUserSearchFilter;
 import com.example.bankcards.mapper.UserMapper;
 import com.example.bankcards.rs.UserInfoRs;
 import com.example.bankcards.service.AdminService;
@@ -14,17 +15,30 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/v1/api/admin/users")
 @Data
-public class AdminController {
+public class AdminUserController {
     private final AdminService adminService;
     private final UserMapper userMapper;
-    private final Logger log = LoggerFactory.getLogger(AdminController.class);
+    private final Logger log = LoggerFactory.getLogger(AdminUserController.class);
 
-    @GetMapping()
-    public ResponseEntity<List<UserInfoRs>> getAllUsers() {
+    @GetMapping("/")
+    public ResponseEntity<List<UserInfoRs>> getAllUsers(
+            @RequestParam(name = "name", required = false) String name,
+            @RequestParam(name = "email", required = false) String email,
+            @RequestParam(name = "pageSize", required = false) Integer pageSize,
+            @RequestParam(name = "pageNumber", required = false) Integer pageNumber
+    ) {
         log.info("Called getAllUsers");
-        var users = adminService.getAllUsers()
+
+        var filter = new AdminUserSearchFilter(
+                name,
+                email,
+                pageSize,
+                pageNumber
+        );
+
+        var users = adminService.getAllUsersByFilter(filter)
                 .stream().map(userMapper::fromUserDtoToUserInfoRs).collect(Collectors.toList());
         return ResponseEntity.ok(users);
     }
@@ -38,7 +52,7 @@ public class AdminController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/updateRole/{id}")
+    @PutMapping("/{id}/role")
     public ResponseEntity<UserInfoRs> updateUserRole(
             @PathVariable("id") Long id,
             @RequestBody Role role

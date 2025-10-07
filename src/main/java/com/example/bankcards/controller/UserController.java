@@ -11,29 +11,29 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/v1/api/users")
 @Data
 public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
     private final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    @GetMapping("/info")
+    @GetMapping("/profile")
     public ResponseEntity<CurrentUserRs> getUserProfile() {
         log.info("Called getUserProfile");
         var users = userMapper.fromUserDtoToCurrentUserRs(userService.getCurrentUser());
         return ResponseEntity.ok(users);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/profile")
     public ResponseEntity<CurrentUserRs> updateUserProfile(
-            @PathVariable("id") Long id,
             @RequestBody UserInfoRq user
     ) {
-        log.info("Called updateUserProfile: id = " + id + "/n user = " + user);
+        log.info("Called updateUserProfile: " + "/n user = " + user);
+        var currentUser = userService.getCurrentUser();
 
         var updatedUser = userMapper.fromUserDtoToCurrentUserRs(
-                userService.updateUserInfo(id, userMapper.fromUserInfoRqToUserDto(user))
+                userService.updateUserInfo(currentUser.id(), userMapper.fromUserInfoRqToUserDto(user))
         );
         return ResponseEntity.ok(updatedUser);
     }

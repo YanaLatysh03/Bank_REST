@@ -1,7 +1,7 @@
 package com.example.bankcards.service;
 
 import com.example.bankcards.dto.UserDto;
-import com.example.bankcards.entity.User;
+import com.example.bankcards.entity.ErrorCode;
 import com.example.bankcards.mapper.UserMapper;
 import com.example.bankcards.repository.UserRepository;
 import lombok.Data;
@@ -18,21 +18,21 @@ public class UserService {
     private final UserMapper userMapper;
 
     public UserDto getCurrentUser() {
-        var username = SecurityContextHolder.getContext().getAuthentication().getName();
-        var user =  userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+        var email = SecurityContextHolder.getContext().getAuthentication().getName();
+        var user =  userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(ErrorCode.E_USER_NOT_FOUND.name()));
         return userMapper.fromUserToUserDto(user);
     }
 
     public UserDto updateUserInfo(Long id, UserDto updatedUser) {
         var user = userRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+                .orElseThrow(() -> new UsernameNotFoundException(ErrorCode.E_USER_NOT_FOUND.name()));
 
-        if (updatedUser.username() != null && !updatedUser.username().equals(user.getUsername())) {
-            if (userRepository.findByUsername(updatedUser.username()).isPresent()) {
-                throw new UsernameNotFoundException("Пользователь с таким именем уже существует");
+        if (updatedUser.email() != null && !updatedUser.email().equals(user.getEmail())) {
+            if (userRepository.findByEmail(updatedUser.email()).isPresent()) {
+                throw new IllegalStateException(ErrorCode.E_USERNAME_TAKEN_BY_ANOTHER_USER.name());
             }
-            user.setUsername(updatedUser.username());
+            user.setName(updatedUser.name());
         }
 
         if (updatedUser.password() != null) {

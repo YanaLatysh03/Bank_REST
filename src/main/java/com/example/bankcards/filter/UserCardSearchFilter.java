@@ -1,15 +1,15 @@
-package com.example.bankcards.dto;
+package com.example.bankcards.filter;
 
 import com.example.bankcards.entity.CardStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public record CardDto(
-        Long id,
-        String maskedNumber,
+public record UserCardSearchFilter(
         LocalDate expiryDate,
         CardStatus status,
-        BigDecimal balance
+        BigDecimal balance,
+        Integer pageSize,
+        Integer pageNumber
 ) {
 }

@@ -1,11 +1,17 @@
 package com.example.bankcards.service;
 
 import com.example.bankcards.dto.UserDto;
+import com.example.bankcards.entity.ErrorCode;
 import com.example.bankcards.entity.Role;
+import com.example.bankcards.entity.User;
+import com.example.bankcards.filter.AdminUserSearchFilter;
 import com.example.bankcards.mapper.UserMapper;
 import com.example.bankcards.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -15,28 +21,36 @@ public class AdminService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
 
-    public List<UserDto> getAllUsers() {
-        var users = userRepository.findAll();
+    private final Logger log = LoggerFactory.getLogger(AdminService.class);
+
+    public List<UserDto> getAllUsersByFilter(AdminUserSearchFilter filter) {
+        log.info("Called getAllUsersByFilter");
+
+        int pageSize = filter.pageSize() != null
+                ? filter.pageSize() : 10;
+
+        int pageNumber = filter.pageNumber() != null
+                ? filter.pageNumber() : 0;
+
+        var pageable = Pageable.ofSize(pageSize).withPage(pageNumber);
+
+        var users = userRepository.findAllByFilter(filter.name(), filter.email(), pageable);
         return users.stream().map(userMapper::fromUserToUserDto).toList();
     }
 
-    public UserDto getUserById(Long id) {
-        var user = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Пользователь не найден"));
-
-        return userMapper.fromUserToUserDto(user);
+    private User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.E_USER_NOT_FOUND.name()));
     }
 
     public void deleteUser(Long id) {
-        var user = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Пользователь не найден"));
+        var user = getUserById(id);
 
         userRepository.delete(user);
     }
 
     public UserDto updateRole(Long id, Role role) {
-        var user = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Пользователь не найден"));
+        var user = getUserById(id);
 
         user.setRole(Role.ADMIN);
         var updatedUser = userRepository.save(user);

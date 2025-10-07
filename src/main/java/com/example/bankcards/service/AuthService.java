@@ -14,7 +14,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     public User signUp(User user) {
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+        if (userRepository.findByEmail(user.getName()).isPresent()) {
             // Заменить на свои исключения
             throw new UsernameNotFoundException("Пользователь с таким именем уже существует");
         }
