@@ -53,4 +53,17 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorDto);
     }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorResponseDto> handleIllegalState(IllegalStateException e) {
+        log.error("Handle IllegalStateException", e);
+
+        var errorDto = new ErrorResponseDto(
+                "InvalidState",
+                e.getMessage(),
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorDto);
+    }
 }

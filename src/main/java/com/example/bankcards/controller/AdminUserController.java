@@ -5,6 +5,7 @@ import com.example.bankcards.filter.AdminUserSearchFilter;
 import com.example.bankcards.mapper.UserMapper;
 import com.example.bankcards.rs.UserInfoRs;
 import com.example.bankcards.service.AdminService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/v1/api/admin/users")
 @Data
+@Tag(name = "Управление пользователями (администратор)")
 public class AdminUserController {
     private final AdminService adminService;
     private final UserMapper userMapper;

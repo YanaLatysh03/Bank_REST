@@ -1,7 +1,7 @@
 package com.example.bankcards.config;
 
-import com.example.bankcards.jwt.JwtAuthFilter;
-import com.example.bankcards.service.CustomUserDetailsService;
+import com.example.bankcards.security.JwtAuthFilter;
+import com.example.bankcards.security.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -59,14 +59,20 @@ public class SecurityConfig {
                 }))
                 // Настройка доступа к конечным точкам
                 .authorizeHttpRequests(request -> request
-                        // Можно указать конкретный путь, * - 1 уровень вложенности, ** - любое количество уровней вложенности
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/words/**").authenticated()
-                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/*", "/v3/api-docs/**").permitAll()
-                        //.requestMatchers("/endpoint", "/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/v1/api/auth/**").permitAll()
+//                        .requestMatchers("/words/**").authenticated()
+                        .requestMatchers(
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/v3/api-docs.yaml",
+                                "/swagger-resources/**",
+                                "/webjars/**"
+                        ).permitAll()
+//                        .requestMatchers("/endpoint", "/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
-                .authenticationProvider(authenticationProvider())
+                //.authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

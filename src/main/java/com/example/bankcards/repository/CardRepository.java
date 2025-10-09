@@ -36,10 +36,14 @@ public interface CardRepository extends JpaRepository<Card, Long> {
         select c from Card c
         where (:expiryDate is null or c.expiryDate = :expiryDate)
         and (:userId is null or c.user.id = :userId)
+        and (:status is null or c.status = :status)
+        and (:balance is null or c.balance > :balance)
     """)
     Page<Card> findAllByFilter(
             @Param("expiryDate") LocalDate expiryDate,
             @Param("userId") Long userId,
+            @Param("status") CardStatus status,
+            @Param("balance") BigDecimal balance,
             Pageable pageable
     );
 }

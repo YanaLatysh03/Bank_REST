@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="create_table_cards" author="YanaLatysh">
+        <createTable tableName="cards">
+            <column autoIncrement="true" name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column autoIncrement="true" name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="encrypted_number" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="last4" type="varchar(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expiry_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="balance" type="decimal(19,2)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="cards"
+                baseColumnNames="user_id"
+                constraintName="fk_cards_user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"/>
+    </changeSet>
+</databaseChangeLog>

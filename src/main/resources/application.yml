@@ -9,13 +9,18 @@ spring:
     password: 11111111
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
-  server:
-    port: 8090
-  card-number-details:
-    bank-bin: 537000
-    number-length: 16
+  liquibase:
+    change-log: classpath:/db/migration/changelog/changelog.xml
+card-number-details:
+  bank-bin: 537000
+  number-length: 16
+jwt:
+  secret-key: yanalatysh123456789012345678901234567890
+  expiration-ms: 86400000
+server:
+  port: 8090
 
 Что нужно сделать:
   - Указать настройки подключения к базе данных.

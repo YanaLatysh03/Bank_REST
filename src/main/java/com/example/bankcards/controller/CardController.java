@@ -1,11 +1,12 @@
 package com.example.bankcards.controller;
 
 import com.example.bankcards.entity.CardStatus;
+import com.example.bankcards.entity.SuccessCode;
 import com.example.bankcards.filter.UserCardSearchFilter;
 import com.example.bankcards.mapper.CardMapper;
 import com.example.bankcards.rs.CardInfoRs;
 import com.example.bankcards.rs.SuccessfulRs;
-import com.example.bankcards.service.UserCardService;
+import com.example.bankcards.service.CardService;
 import com.example.bankcards.service.UserService;
 import lombok.Data;
 import org.slf4j.Logger;
@@ -19,14 +20,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/v1/api/users/cards")
+@RequestMapping("/v1/api/cards")
 @Data
-public class UserCardController {
-    private final UserCardService userCardService;
+public class CardController {
+    private final CardService userCardService;
     private final UserService userService;
     private final CardMapper cardMapper;
 
-    private final Logger log = LoggerFactory.getLogger(UserCardController.class);
+    private final Logger log = LoggerFactory.getLogger(CardController.class);
 
     @GetMapping("/")
     public ResponseEntity<List<CardInfoRs>> getAllCards(
@@ -66,6 +67,6 @@ public class UserCardController {
     ) {
         var currentUser = userService.getCurrentUser();
         userCardService.requestBlockCard(currentUser.id(), cardId);
-        return ResponseEntity.ok(new SuccessfulRs("Запрос на блокировку карты успешно отправлен"));
+        return ResponseEntity.ok(new SuccessfulRs(SuccessCode.CARD_BLOCK_REQUEST_SUCCESS.name()));
     }
 }

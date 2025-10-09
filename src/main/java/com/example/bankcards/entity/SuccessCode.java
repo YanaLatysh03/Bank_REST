@@ -1,0 +1,10 @@
+package com.example.bankcards.entity;
+
+public enum SuccessCode {
+    CARD_DELETED_SUCCESS,
+    CARD_BLOCK_APPROVED,
+    CARD_BLOCK_REJECTED,
+    CARD_ACTIVATION_SUCCESS,
+    CARD_BLOCK_SUCCESS,
+    CARD_BLOCK_REQUEST_SUCCESS
+}

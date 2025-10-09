@@ -19,11 +19,11 @@ import java.util.List;
 
 @Service
 @Data
-public class UserCardService {
+public class CardService {
     private final CardRepository cardRepository;
     private final CardMapper cardMapper;
 
-    private final Logger log = LoggerFactory.getLogger(UserCardService.class);
+    private final Logger log = LoggerFactory.getLogger(CardService.class);
 
     public List<CardDto> getUserCardsByFilter(Long userId, UserCardSearchFilter filter) {
 

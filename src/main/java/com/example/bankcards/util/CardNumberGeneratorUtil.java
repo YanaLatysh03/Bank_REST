@@ -27,7 +27,6 @@ public class CardNumberGeneratorUtil {
         int sum = 0;
         for (int i = 0; i < number.length(); i++) {
 
-            // Get the digit at the current position.
             int digit = Integer.parseInt(number.substring(i, (i + 1)));
 
             if ((i % 2) == 0) {

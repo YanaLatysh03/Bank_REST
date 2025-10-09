@@ -19,7 +19,7 @@ public class Card {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "encryptedNumber", nullable = false, unique = true)
+    @Column(name = "encrypted_number", nullable = false, unique = true)
     private String encryptedNumber;
 
     @Column(name = "last4", length = 4, nullable = false)

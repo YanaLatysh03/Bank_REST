@@ -14,6 +14,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -41,13 +42,12 @@ public class AdminCardService {
     public CardDto createNewCard(Long userId) {
         log.info("Called createNewCard: userId = " + userId);
         var cardNumber = CardNumberGeneratorUtil.generate(bin, numberLength);
-        String plainNumber = "11111111111";
         var user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("Пользователь не найден"));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.E_USER_NOT_FOUND.name()));
 
         Card card = new Card();
-        card.setEncryptedNumber(EncryptionUtil.encrypt(plainNumber));
-        card.setLast4(plainNumber.substring(plainNumber.length() - 4));
+        card.setEncryptedNumber(EncryptionUtil.encrypt(cardNumber));
+        card.setLast4(cardNumber.substring(cardNumber.length() - 4));
         card.setUser(user);
         card.setExpiryDate(LocalDate.now().plusYears(3));
         card.setStatus(CardStatus.ACTIVE);
@@ -60,12 +60,17 @@ public class AdminCardService {
     public void deleteCard(Long cardId) {
         log.info("Called deleteCard: cardId = " + cardId);
         Card card = getCardById(cardId);
-        cardRepository.deleteById(cardId);
+        cardRepository.delete(card);
     }
 
     public void blockCard(Long cardId) {
         log.info("Called blockCard: cardId = " + cardId);
         Card card = getCardById(cardId);
+
+        if (card.getStatus() == CardStatus.BLOCKED) {
+            throw new IllegalStateException(ErrorCode.E_CARD_ALREADY_BLOCKED.name());
+        }
+
         card.setStatus(CardStatus.BLOCKED);
         cardRepository.save(card);
     }
@@ -74,7 +79,7 @@ public class AdminCardService {
         log.info("Called activateCard: cardId = " + cardId);
         Card card = getCardById(cardId);
 
-        if (card.getStatus() != CardStatus.ACTIVE) {
+        if (card.getStatus() == CardStatus.ACTIVE) {
             throw new IllegalStateException(ErrorCode.E_CARD_ALREADY_ACTIVE.name());
         }
 
@@ -102,6 +107,8 @@ public class AdminCardService {
         var cards = cardRepository.findAllByFilter(
                 filter.expiryDate(),
                 filter.userId(),
+                filter.status(),
+                filter.balance(),
                 pageable
         );
         return cards.stream().map(cardMapper::fromCardToCardDto).collect(Collectors.toList());
@@ -131,8 +138,8 @@ public class AdminCardService {
         cardRepository.save(card);
     }
 
-    public List<CardDto> getBlockRequestedCards() {
-        log.info("Called getBlockRequestedCards");
+    public List<CardDto> getCardsRequestedToBlock() {
+        log.info("Called getCardsRequestedToBlock");
         var cards = cardRepository.findAllByStatus(CardStatus.BLOCK_REQUESTED);
         return cards.stream().map(
                 cardMapper::fromCardToCardDto
