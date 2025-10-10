@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/bank-rest
+    username: user1
+    password: 11111111
