@@ -26,7 +26,7 @@ public class Card {
     private String last4;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "userId", nullable = false)
     private User user;
 
     @Column(name = "expiry_date", nullable = false)
@@ -38,4 +38,12 @@ public class Card {
 
     @Column(name = "balance", nullable = false, precision = 19, scale = 2)
     private BigDecimal balance;
+
+    public CardStatus getStatus() {
+        if (expiryDate.isBefore(LocalDate.now())) {
+            return CardStatus.EXPIRED;
+        } else {
+            return this.status;
+        }
+    }
 }

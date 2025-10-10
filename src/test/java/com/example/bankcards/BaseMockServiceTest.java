@@ -1,6 +1,5 @@
-package com.example.bankcards.service;
+package com.example.bankcards;
 
-import com.example.bankcards.controller.TestConfig;
 import com.example.bankcards.repository.CardRepository;
 import com.example.bankcards.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;

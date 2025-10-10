@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 public record CardDto(
         Long id,
-        Long user_id,
+        Long userId,
         String maskedNumber,
         LocalDate expiryDate,
         CardStatus status,

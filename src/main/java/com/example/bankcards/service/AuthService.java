@@ -6,7 +6,7 @@ import com.example.bankcards.entity.User;
 import com.example.bankcards.mapper.UserMapper;
 import com.example.bankcards.repository.UserRepository;
 import com.example.bankcards.rq.RegisterRq;
-import com.example.bankcards.rs.AuthResponse;
+import com.example.bankcards.rs.AuthRs;
 import com.example.bankcards.security.CustomUserDetailsService;
 import com.example.bankcards.security.JwtService;
 import lombok.Data;
@@ -27,7 +27,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
 
-    public AuthResponse register(RegisterRq request) {
+    public AuthRs register(RegisterRq request) {
         if (userRepository.findByEmail(request.email()).isPresent()) {
             throw new IllegalStateException(ErrorCode.E_USERNAME_TAKEN_BY_ANOTHER_USER.name());
         }
@@ -41,20 +41,20 @@ public class AuthService {
 
         var userDetails = userDetailsService.loadUserByUsername(createUser.getEmail());
         var token = jwtService.generateToken(userDetails);
-        AuthResponse response = new AuthResponse();
+        AuthRs response = new AuthRs();
         response.setToken(token);
         response.setEmail(createUser.getEmail());
         response.setRole(createUser.getRole().name());
         return response;
     }
 
-    public AuthResponse login(String email, String password) {
+    public AuthRs login(String email, String password) {
         Authentication auth = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, password)
         );
         UserDetails userDetails = (UserDetails) auth.getPrincipal();
         String token = jwtService.generateToken(userDetails);
-        AuthResponse response = new AuthResponse();
+        AuthRs response = new AuthRs();
         response.setToken(token);
         response.setEmail(userDetails.getUsername());
         response.setRole(userDetails.getAuthorities().iterator().next().getAuthority());

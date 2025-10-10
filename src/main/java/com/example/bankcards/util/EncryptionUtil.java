@@ -22,7 +22,7 @@ public class EncryptionUtil {
             cipher.init(Cipher.ENCRYPT_MODE, keySpec);
             return Base64.getEncoder().encodeToString(cipher.doFinal(data.getBytes()));
         } catch (Exception e) {
-            throw new RuntimeException(ErrorCode.ENCRYPTION_ERROR.name());
+            throw new RuntimeException(ErrorCode.E_ENCRYPTION_ERROR.name());
         }
     }
 
@@ -34,7 +34,7 @@ public class EncryptionUtil {
             cipher.init(Cipher.DECRYPT_MODE, keySpec);
             return new String(cipher.doFinal(Base64.getDecoder().decode(encrypted)));
         } catch (Exception e) {
-            throw new RuntimeException(ErrorCode.DECRYPTION_ERROR.name());
+            throw new RuntimeException(ErrorCode.E_DECRYPTION_ERROR.name());
         }
     }
 }

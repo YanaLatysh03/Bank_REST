@@ -1,13 +1,12 @@
-package com.example.bankcards.filter;
+package com.example.bankcards.search;
 
 import com.example.bankcards.entity.CardStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public record AdminCardSearchFilter(
+public record UserCardSearchFilter(
         LocalDate expiryDate,
-        Long userId,
         CardStatus status,
         BigDecimal balance,
         Integer pageSize,

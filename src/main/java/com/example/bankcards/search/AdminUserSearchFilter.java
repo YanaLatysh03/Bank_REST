@@ -1,4 +1,4 @@
-package com.example.bankcards.filter;
+package com.example.bankcards.search;
 
 public record AdminUserSearchFilter(
         String name,

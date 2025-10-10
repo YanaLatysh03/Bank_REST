@@ -1,8 +1,8 @@
-package com.example.bankcards.exception;
+package com.example.bankcards.rs;
 
 import java.time.LocalDateTime;
 
-public record ErrorResponseDto (
+public record ErrorRs(
         String message,
         String detailMessage,
         LocalDateTime errorTime

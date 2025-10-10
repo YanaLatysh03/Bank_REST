@@ -1,8 +1,8 @@
-package com.example.bankcards.controller;
+package com.example.bankcards.service;
 
 import com.example.bankcards.entity.Card;
 import com.example.bankcards.entity.User;
-import com.example.bankcards.service.BaseMockServiceTest;
+import com.example.bankcards.BaseMockServiceTest;
 import com.example.bankcards.service.CardService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +27,9 @@ public class CardServiceTest extends BaseMockServiceTest {
         card.setId(1L);
         card.setUser(user);
 
-        // when
         when(cardRepository.findById(any())).thenReturn(Optional.of(card));
 
-        // verify
+        // when and then
         assertThrows(IllegalStateException.class, () -> cardService.getCardBalance(2L, 1L));
     }
 }

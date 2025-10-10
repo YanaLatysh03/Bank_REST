@@ -1,12 +1,11 @@
 package com.example.bankcards.rs;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class AuthResponse {
+public class AuthRs {
     private String token;
     private String tokenType = "Bearer";
     private String email;

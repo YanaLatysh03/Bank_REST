@@ -10,7 +10,7 @@ import org.mapstruct.MappingConstants;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface CardMapper {
     @Mapping(target = "maskedNumber", expression = "java(\"**** **** **** \" + card.getLast4())")
-    @Mapping(target = "user_id", expression = "java(card.getUser().getId())")
+    @Mapping(target = "userId", expression = "java(card.getUser().getId())")
     CardDto fromCardToCardDto(Card card);
 
     CardInfoRs fromCardDtoToCardInfoRs(CardDto card);

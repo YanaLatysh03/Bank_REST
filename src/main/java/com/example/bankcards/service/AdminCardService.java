@@ -4,7 +4,7 @@ import com.example.bankcards.dto.CardDto;
 import com.example.bankcards.entity.Card;
 import com.example.bankcards.entity.CardStatus;
 import com.example.bankcards.entity.ErrorCode;
-import com.example.bankcards.filter.AdminCardSearchFilter;
+import com.example.bankcards.search.AdminCardSearchFilter;
 import com.example.bankcards.mapper.CardMapper;
 import com.example.bankcards.repository.CardRepository;
 import com.example.bankcards.repository.UserRepository;
@@ -14,7 +14,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -53,7 +52,7 @@ public class AdminCardService {
         card.setStatus(CardStatus.ACTIVE);
         card.setBalance(BigDecimal.ZERO);
 
-        var newCard = cardRepository.save(card);
+        var newCard = saveAndUpdateStatus(card);
         return cardMapper.fromCardToCardDto(newCard);
     }
 
@@ -72,7 +71,7 @@ public class AdminCardService {
         }
 
         card.setStatus(CardStatus.BLOCKED);
-        cardRepository.save(card);
+        saveAndUpdateStatus(card);
     }
 
     public void activateCard(Long cardId) {
@@ -85,7 +84,7 @@ public class AdminCardService {
 
         if (card.getExpiryDate().isAfter(LocalDate.now())) {
             card.setStatus(CardStatus.ACTIVE);
-            cardRepository.save(card);
+            saveAndUpdateStatus(card);
         }
         else {
             log.info("Can't activate card: expiry date = " + card.getExpiryDate());
@@ -123,7 +122,7 @@ public class AdminCardService {
         }
 
         card.setStatus(CardStatus.BLOCKED);
-        cardRepository.save(card);
+        saveAndUpdateStatus(card);
     }
 
     public void rejectBlockRequest(Long cardId) {
@@ -135,7 +134,7 @@ public class AdminCardService {
         }
 
         card.setStatus(CardStatus.ACTIVE);
-        cardRepository.save(card);
+        saveAndUpdateStatus(card);
     }
 
     public List<CardDto> getCardsRequestedToBlock() {
@@ -151,4 +150,12 @@ public class AdminCardService {
         return cardRepository.findById(cardId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.E_CARD_NOT_FOUND.name()));
     }
+
+    private Card saveAndUpdateStatus(Card cardToSave) {
+        if (cardToSave.getExpiryDate().isBefore(LocalDate.now())) {
+            cardToSave.setStatus(CardStatus.EXPIRED);
+        }
+        return cardRepository.save(cardToSave);
+    }
+
 }

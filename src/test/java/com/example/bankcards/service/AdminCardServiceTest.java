@@ -1,10 +1,10 @@
-package com.example.bankcards.controller;
+package com.example.bankcards.service;
 
 import com.example.bankcards.entity.Card;
 import com.example.bankcards.entity.CardStatus;
 import com.example.bankcards.entity.User;
 import com.example.bankcards.service.AdminCardService;
-import com.example.bankcards.service.BaseMockServiceTest;
+import com.example.bankcards.BaseMockServiceTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -44,9 +44,9 @@ public class AdminCardServiceTest extends BaseMockServiceTest {
     void testActivateAlreadyActiveCard() {
         // preconditions
         var card = new Card();
+        card.setExpiryDate(LocalDate.now().plusDays(1));
         card.setStatus(CardStatus.ACTIVE);
         when(cardRepository.findById(any())).thenReturn(Optional.of(card));
-
 
         // when and then
         assertThrows(IllegalStateException.class, () -> adminCardService.activateCard(1L));

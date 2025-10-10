@@ -4,7 +4,7 @@ import com.example.bankcards.dto.CardDto;
 import com.example.bankcards.entity.Card;
 import com.example.bankcards.entity.CardStatus;
 import com.example.bankcards.entity.ErrorCode;
-import com.example.bankcards.filter.UserCardSearchFilter;
+import com.example.bankcards.search.UserCardSearchFilter;
 import com.example.bankcards.mapper.CardMapper;
 import com.example.bankcards.repository.CardRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Data
@@ -79,34 +81,53 @@ public class CardService {
         }
 
         card.setStatus(CardStatus.BLOCK_REQUESTED);
-        cardRepository.save(card);
+        saveAndUpdateStatus(card);
     }
 
     @Transactional
     public void transferBetweenCards(Long sourceCardId, Long destinationCardId, BigDecimal amount) {
         var user = userService.getCurrentUser();
-        var sourceCard = getCardById(user.id());
-        var destinationCard = getCardById(user.id());
+        var sourceCard = getCardById(sourceCardId);
+        var destinationCard = getCardById(destinationCardId);
+
+        if (!Objects.equals(sourceCard.getUser().getId(), user.id()) ||
+                !Objects.equals(user.id(), destinationCard.getUser().getId())) {
+            throw new IllegalArgumentException(ErrorCode.E_CARDS_NOT_OWNED_BY_USER.name());
+        }
 
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException(ErrorCode.INVALID_AMOUNT.name());
+            throw new IllegalArgumentException(ErrorCode.E_INVALID_AMOUNT.name());
         }
+
         if (sourceCard.getStatus() != CardStatus.ACTIVE) {
-            throw new IllegalArgumentException(ErrorCode.SOURCE_CARD_INACTIVE.name());
+            throw new IllegalArgumentException(ErrorCode.E_SOURCE_CARD_INACTIVE.name());
         }
+
+        if (destinationCard.getStatus() != CardStatus.ACTIVE) {
+            throw new IllegalArgumentException(ErrorCode.E_DESTINATION_CARD_INACTIVE.name());
+        }
+
         if (sourceCard.getBalance().compareTo(amount) < 0) {
-            throw new IllegalArgumentException(ErrorCode.INSUFFICIENT_BALANCE.name());
+            throw new IllegalArgumentException(ErrorCode.E_INSUFFICIENT_BALANCE.name());
         }
 
         sourceCard.setBalance(sourceCard.getBalance().subtract(amount));
         destinationCard.setBalance(destinationCard.getBalance().add(amount));
 
-        cardRepository.save(sourceCard);
-        cardRepository.save(destinationCard);
+        saveAndUpdateStatus(sourceCard);
+        saveAndUpdateStatus(destinationCard);
     }
 
     private Card getCardById(Long id) {
         return cardRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.E_CARD_NOT_FOUND.name()));
     }
+
+    private void saveAndUpdateStatus(Card cardToSave) {
+        if (cardToSave.getExpiryDate().isBefore(LocalDate.now())) {
+            cardToSave.setStatus(CardStatus.EXPIRED);
+        }
+        cardRepository.save(cardToSave);
+    }
+
 }

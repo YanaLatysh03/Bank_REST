@@ -2,13 +2,14 @@ package com.example.bankcards.controller;
 
 import com.example.bankcards.entity.CardStatus;
 import com.example.bankcards.entity.SuccessCode;
-import com.example.bankcards.filter.AdminCardSearchFilter;
+import com.example.bankcards.search.AdminCardSearchFilter;
 import com.example.bankcards.mapper.CardMapper;
 import com.example.bankcards.rq.CreateNewCardRq;
 import com.example.bankcards.rs.CardInfoRs;
 import com.example.bankcards.rs.SuccessfulRs;
 import com.example.bankcards.service.AdminCardService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
 import org.slf4j.Logger;
@@ -32,7 +33,8 @@ public class AdminCardController {
     private final Logger log = LoggerFactory.getLogger(AdminCardController.class);
 
     @GetMapping("/")
-    @Operation(summary = "Получение всех карточек по фильтру и с пагинацией")
+    @Operation(summary = "Получение всех карточек по фильтру и с пагинацией",
+            security = @SecurityRequirement(name = "BearerAuthentication"))
     public ResponseEntity<List<CardInfoRs>> getAllCards(
             @RequestParam(name = "expiryDate", required = false) LocalDate expiryDate,
             @RequestParam(name = "userId", required = false) Long userId,
@@ -57,7 +59,8 @@ public class AdminCardController {
     }
 
     @PostMapping("/")
-    @Operation(summary = "Создание новой карточки")
+    @Operation(summary = "Создание новой карточки",
+            security = @SecurityRequirement(name = "BearerAuthentication"))
     public ResponseEntity<CardInfoRs> createNewCard(
             @RequestBody CreateNewCardRq rq
             ) {
@@ -67,7 +70,8 @@ public class AdminCardController {
     }
 
     @DeleteMapping("/{cardId}")
-    @Operation(summary = "Удаление карточки")
+    @Operation(summary = "Удаление карточки",
+            security = @SecurityRequirement(name = "BearerAuthentication"))
     public ResponseEntity<SuccessfulRs> deleteCard(
             @PathVariable Long cardId
     ) {
@@ -77,7 +81,8 @@ public class AdminCardController {
     }
 
     @PostMapping("/{cardId}/approve-block")
-    @Operation(summary = "Подтверждение запроса на блокировку карточки")
+    @Operation(summary = "Подтверждение запроса на блокировку карточки",
+            security = @SecurityRequirement(name = "BearerAuthentication"))
     public ResponseEntity<SuccessfulRs> approveBlock(
             @PathVariable Long cardId
     ) {
@@ -87,7 +92,8 @@ public class AdminCardController {
     }
 
     @PostMapping("/{cardId}/reject-block")
-    @Operation(summary = "Отклонение запроса на блокировку карточки")
+    @Operation(summary = "Отклонение запроса на блокировку карточки",
+            security = @SecurityRequirement(name = "BearerAuthentication"))
     public ResponseEntity<SuccessfulRs> rejectBlock(
             @PathVariable Long cardId
     ) {
@@ -97,7 +103,8 @@ public class AdminCardController {
     }
 
     @GetMapping("/block-requested")
-    @Operation(summary = "Получение всех карточек с запросом на блокировку")
+    @Operation(summary = "Получение всех карточек с запросом на блокировку",
+            security = @SecurityRequirement(name = "BearerAuthentication"))
     public ResponseEntity<List<CardInfoRs>> getBlockRequestedCards() {
         log.info("Called getBlockRequestedCards");
         var blockRequestedCards = adminCardService.getCardsRequestedToBlock();
@@ -109,7 +116,8 @@ public class AdminCardController {
     }
 
     @PostMapping("/{cardId}/activate")
-    @Operation(summary = "Активирование карточки")
+    @Operation(summary = "Активирование карточки",
+            security = @SecurityRequirement(name = "BearerAuthentication"))
     public ResponseEntity<SuccessfulRs> activateCard(
             @PathVariable Long cardId
     ) {
@@ -119,7 +127,8 @@ public class AdminCardController {
     }
 
     @PostMapping("/{cardId}/block")
-    @Operation(summary = "Блокировка карточки")
+    @Operation(summary = "Блокировка карточки",
+            security = @SecurityRequirement(name = "BearerAuthentication"))
     public ResponseEntity<SuccessfulRs> blockCard(
             @PathVariable Long cardId
     ) {

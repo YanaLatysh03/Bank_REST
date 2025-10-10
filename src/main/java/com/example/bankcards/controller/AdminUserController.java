@@ -2,12 +2,13 @@ package com.example.bankcards.controller;
 
 import com.example.bankcards.entity.Role;
 import com.example.bankcards.entity.SuccessCode;
-import com.example.bankcards.filter.AdminUserSearchFilter;
+import com.example.bankcards.search.AdminUserSearchFilter;
 import com.example.bankcards.mapper.UserMapper;
 import com.example.bankcards.rs.SuccessfulRs;
 import com.example.bankcards.rs.UserInfoRs;
 import com.example.bankcards.service.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
 import org.slf4j.Logger;
@@ -28,7 +29,8 @@ public class AdminUserController {
     private final Logger log = LoggerFactory.getLogger(AdminUserController.class);
 
     @GetMapping("/")
-    @Operation(summary = "Получение всех пользователей")
+    @Operation(summary = "Получение всех пользователей",
+            security = @SecurityRequirement(name = "BearerAuthentication"))
     public ResponseEntity<List<UserInfoRs>> getAllUsers(
             @RequestParam(name = "name", required = false) String name,
             @RequestParam(name = "email", required = false) String email,
@@ -50,7 +52,8 @@ public class AdminUserController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Удаление пользователя")
+    @Operation(summary = "Удаление пользователя",
+            security = @SecurityRequirement(name = "BearerAuthentication"))
     public ResponseEntity<SuccessfulRs> deleteUser(
             @PathVariable("id") Long id
     ) {
@@ -60,7 +63,8 @@ public class AdminUserController {
     }
 
     @PutMapping("/{id}/role")
-    @Operation(summary = "Изменение роли пользователя")
+    @Operation(summary = "Изменение роли пользователя",
+            security = @SecurityRequirement(name = "BearerAuthentication"))
     public ResponseEntity<UserInfoRs> updateUserRole(
             @PathVariable("id") Long id,
             @RequestBody Role role

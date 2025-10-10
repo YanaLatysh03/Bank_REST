@@ -1,4 +1,4 @@
-package com.example.bankcards.controller;
+package com.example.bankcards;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ComponentScan;

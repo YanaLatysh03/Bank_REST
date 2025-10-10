@@ -2,7 +2,7 @@ package com.example.bankcards.controller;
 
 import com.example.bankcards.entity.CardStatus;
 import com.example.bankcards.entity.SuccessCode;
-import com.example.bankcards.filter.UserCardSearchFilter;
+import com.example.bankcards.search.UserCardSearchFilter;
 import com.example.bankcards.mapper.CardMapper;
 import com.example.bankcards.rq.TransferRq;
 import com.example.bankcards.rs.CardInfoRs;
@@ -10,6 +10,7 @@ import com.example.bankcards.rs.SuccessfulRs;
 import com.example.bankcards.service.CardService;
 import com.example.bankcards.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
 import org.slf4j.Logger;
@@ -34,7 +35,8 @@ public class CardController {
     private final Logger log = LoggerFactory.getLogger(CardController.class);
 
     @GetMapping("/")
-    @Operation(summary = "Получение всех карточек пользователя по фильтру и с пагинацией")
+    @Operation(summary = "Получение всех карточек пользователя по фильтру и с пагинацией",
+            security = @SecurityRequirement(name = "BearerAuthentication"))
     public ResponseEntity<List<CardInfoRs>> getAllCards(
             @RequestParam(name = "expiryDate", required = false) LocalDate expiryDate,
             @RequestParam(name = "status", required = false) CardStatus status,
@@ -59,7 +61,8 @@ public class CardController {
     }
 
     @GetMapping("/{cardId}/balance")
-    @Operation(summary = "Получение баланса карточки пользователя")
+    @Operation(summary = "Получение баланса карточки пользователя",
+            security = @SecurityRequirement(name = "BearerAuthentication"))
     public ResponseEntity<BigDecimal> getBalance(
             @PathVariable Long cardId
     ) {
@@ -68,7 +71,8 @@ public class CardController {
     }
 
     @GetMapping("/{cardId}/request-block")
-    @Operation(summary = "Запрос на блокировку карточки пользователя")
+    @Operation(summary = "Запрос на блокировку карточки пользователя",
+            security = @SecurityRequirement(name = "BearerAuthentication"))
     public ResponseEntity<SuccessfulRs> requestBlock(
             @PathVariable Long cardId
     ) {
@@ -78,7 +82,8 @@ public class CardController {
     }
 
     @PostMapping("/transfer")
-    @Operation(summary = "Перевод денег между карточками пользователя")
+    @Operation(summary = "Перевод денег между карточками пользователя",
+            security = @SecurityRequirement(name = "BearerAuthentication"))
     public ResponseEntity<SuccessfulRs> transferBetweenCards(
             @RequestBody TransferRq request
     ) {

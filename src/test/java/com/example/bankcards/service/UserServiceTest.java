@@ -1,9 +1,9 @@
-package com.example.bankcards.controller;
+package com.example.bankcards.service;
 
 import com.example.bankcards.dto.UserDto;
 import com.example.bankcards.entity.Role;
 import com.example.bankcards.entity.User;
-import com.example.bankcards.service.BaseMockServiceTest;
+import com.example.bankcards.BaseMockServiceTest;
 import com.example.bankcards.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

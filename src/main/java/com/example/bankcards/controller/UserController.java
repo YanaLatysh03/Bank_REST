@@ -5,6 +5,7 @@ import com.example.bankcards.rq.UserInfoRq;
 import com.example.bankcards.rs.CurrentUserRs;
 import com.example.bankcards.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
 import org.slf4j.Logger;
@@ -22,7 +23,8 @@ public class UserController {
     private final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @GetMapping("/profile")
-    @Operation(summary = "Получение профиля пользователя")
+    @Operation(summary = "Получение профиля пользователя",
+            security = @SecurityRequirement(name = "BearerAuthentication"))
     public ResponseEntity<CurrentUserRs> getUserProfile() {
         log.info("Called getUserProfile");
         var users = userMapper.fromUserDtoToCurrentUserRs(userService.getCurrentUser());
@@ -30,7 +32,8 @@ public class UserController {
     }
 
     @PutMapping("/profile")
-    @Operation(summary = "Изменение профиля пользователя")
+    @Operation(summary = "Изменение профиля пользователя",
+            security = @SecurityRequirement(name = "BearerAuthentication"))
     public ResponseEntity<CurrentUserRs> updateUserProfile(
             @RequestBody UserInfoRq user
     ) {
