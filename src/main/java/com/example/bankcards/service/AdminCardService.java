@@ -27,17 +27,17 @@ import java.util.stream.Collectors;
 @Service
 @Data
 public class AdminCardService {
-
     private final CardRepository cardRepository;
     private final UserRepository userRepository;
     private final CardMapper cardMapper;
+    private final EncryptionUtil encryptionUtil;
 
     private final Logger log = LoggerFactory.getLogger(AdminCardService.class);
 
     @Value("${card-number-details.bank-bin}")
-    private static String bin;
+    private String bin;
     @Value("${card-number-details.number-length}")
-    private static int numberLength;
+    private int numberLength;
 
     public CardDto createNewCard(Long userId) {
         log.info("Called createNewCard: userId = " + userId);
@@ -46,7 +46,7 @@ public class AdminCardService {
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.E_USER_NOT_FOUND.name()));
 
         Card card = new Card();
-        card.setEncryptedNumber(EncryptionUtil.encrypt(cardNumber));
+        card.setEncryptedNumber(encryptionUtil.encrypt(cardNumber));
         card.setLast4(cardNumber.substring(cardNumber.length() - 4));
         card.setUser(user);
         card.setExpiryDate(LocalDate.now().plusYears(3));

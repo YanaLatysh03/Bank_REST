@@ -52,7 +52,7 @@ public class AdminService {
     public UserDto updateRole(Long id, Role role) {
         var user = getUserById(id);
 
-        user.setRole(Role.ADMIN);
+        user.setRole(Role.ROLE_ADMIN);
         var updatedUser = userRepository.save(user);
         return userMapper.fromUserToUserDto(updatedUser);
     }

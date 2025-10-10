@@ -1,7 +1,7 @@
 package com.example.bankcards.rs;
 
 public record CurrentUserRs(
-        String username,
-        String password
+        String email,
+        String name
 ) {
 }

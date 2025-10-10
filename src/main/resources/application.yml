@@ -1,7 +1,7 @@
 #
 # application.yml — главный конфигурационный файл Spring Boot.
 security:
-  encryption-key: YanaLatyshSecretKey
+  encryption-key: YanaLatyshSecret
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/bank-rest
@@ -17,7 +17,7 @@ card-number-details:
   bank-bin: 537000
   number-length: 16
 jwt:
-  secret-key: yanalatysh123456789012345678901234567890
+  secret-key: U29tZVN1cGVyU2VjdXJlS2V5U3RyaW5nV2l0aEVuY3J5cHRpb24xMjM0NTY=
   expiration-ms: 86400000
 server:
   port: 8090

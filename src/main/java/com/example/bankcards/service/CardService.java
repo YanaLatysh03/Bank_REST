@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.List;
 public class CardService {
     private final CardRepository cardRepository;
     private final CardMapper cardMapper;
+    private final UserService userService;
 
     private final Logger log = LoggerFactory.getLogger(CardService.class);
 
@@ -78,6 +80,29 @@ public class CardService {
 
         card.setStatus(CardStatus.BLOCK_REQUESTED);
         cardRepository.save(card);
+    }
+
+    @Transactional
+    public void transferBetweenCards(Long sourceCardId, Long destinationCardId, BigDecimal amount) {
+        var user = userService.getCurrentUser();
+        var sourceCard = getCardById(user.id());
+        var destinationCard = getCardById(user.id());
+
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException(ErrorCode.INVALID_AMOUNT.name());
+        }
+        if (sourceCard.getStatus() != CardStatus.ACTIVE) {
+            throw new IllegalArgumentException(ErrorCode.SOURCE_CARD_INACTIVE.name());
+        }
+        if (sourceCard.getBalance().compareTo(amount) < 0) {
+            throw new IllegalArgumentException(ErrorCode.INSUFFICIENT_BALANCE.name());
+        }
+
+        sourceCard.setBalance(sourceCard.getBalance().subtract(amount));
+        destinationCard.setBalance(destinationCard.getBalance().add(amount));
+
+        cardRepository.save(sourceCard);
+        cardRepository.save(destinationCard);
     }
 
     private Card getCardById(Long id) {

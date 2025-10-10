@@ -8,6 +8,7 @@ import com.example.bankcards.rq.CreateNewCardRq;
 import com.example.bankcards.rs.CardInfoRs;
 import com.example.bankcards.rs.SuccessfulRs;
 import com.example.bankcards.service.AdminCardService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
 import org.slf4j.Logger;
@@ -31,6 +32,7 @@ public class AdminCardController {
     private final Logger log = LoggerFactory.getLogger(AdminCardController.class);
 
     @GetMapping("/")
+    @Operation(summary = "Получение всех карточек по фильтру и с пагинацией")
     public ResponseEntity<List<CardInfoRs>> getAllCards(
             @RequestParam(name = "expiryDate", required = false) LocalDate expiryDate,
             @RequestParam(name = "userId", required = false) Long userId,
@@ -55,6 +57,7 @@ public class AdminCardController {
     }
 
     @PostMapping("/")
+    @Operation(summary = "Создание новой карточки")
     public ResponseEntity<CardInfoRs> createNewCard(
             @RequestBody CreateNewCardRq rq
             ) {
@@ -64,6 +67,7 @@ public class AdminCardController {
     }
 
     @DeleteMapping("/{cardId}")
+    @Operation(summary = "Удаление карточки")
     public ResponseEntity<SuccessfulRs> deleteCard(
             @PathVariable Long cardId
     ) {
@@ -73,6 +77,7 @@ public class AdminCardController {
     }
 
     @PostMapping("/{cardId}/approve-block")
+    @Operation(summary = "Подтверждение запроса на блокировку карточки")
     public ResponseEntity<SuccessfulRs> approveBlock(
             @PathVariable Long cardId
     ) {
@@ -82,6 +87,7 @@ public class AdminCardController {
     }
 
     @PostMapping("/{cardId}/reject-block")
+    @Operation(summary = "Отклонение запроса на блокировку карточки")
     public ResponseEntity<SuccessfulRs> rejectBlock(
             @PathVariable Long cardId
     ) {
@@ -91,6 +97,7 @@ public class AdminCardController {
     }
 
     @GetMapping("/block-requested")
+    @Operation(summary = "Получение всех карточек с запросом на блокировку")
     public ResponseEntity<List<CardInfoRs>> getBlockRequestedCards() {
         log.info("Called getBlockRequestedCards");
         var blockRequestedCards = adminCardService.getCardsRequestedToBlock();
@@ -102,6 +109,7 @@ public class AdminCardController {
     }
 
     @PostMapping("/{cardId}/activate")
+    @Operation(summary = "Активирование карточки")
     public ResponseEntity<SuccessfulRs> activateCard(
             @PathVariable Long cardId
     ) {
@@ -111,6 +119,7 @@ public class AdminCardController {
     }
 
     @PostMapping("/{cardId}/block")
+    @Operation(summary = "Блокировка карточки")
     public ResponseEntity<SuccessfulRs> blockCard(
             @PathVariable Long cardId
     ) {

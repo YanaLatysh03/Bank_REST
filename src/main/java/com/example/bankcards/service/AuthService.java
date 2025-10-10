@@ -1,10 +1,11 @@
 package com.example.bankcards.service;
 
+import com.example.bankcards.entity.ErrorCode;
 import com.example.bankcards.entity.Role;
 import com.example.bankcards.entity.User;
 import com.example.bankcards.mapper.UserMapper;
 import com.example.bankcards.repository.UserRepository;
-import com.example.bankcards.rq.RegisterRequest;
+import com.example.bankcards.rq.RegisterRq;
 import com.example.bankcards.rs.AuthResponse;
 import com.example.bankcards.security.CustomUserDetailsService;
 import com.example.bankcards.security.JwtService;
@@ -26,15 +27,16 @@ public class AuthService {
     private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
 
-    public AuthResponse register(RegisterRequest request) {
+    public AuthResponse register(RegisterRq request) {
         if (userRepository.findByEmail(request.email()).isPresent()) {
-            throw new IllegalStateException("Пользователь с таким email уже существует");
+            throw new IllegalStateException(ErrorCode.E_USERNAME_TAKEN_BY_ANOTHER_USER.name());
         }
 
         User user = new User();
         user.setEmail(request.email());
         user.setPassword(passwordEncoder.encode(request.password()));
-        user.setRole(Role.valueOf(request.role()));
+        user.setName(request.name());
+        user.setRole(Role.ROLE_USER);
         var createUser = userRepository.save(user);
 
         var userDetails = userDetailsService.loadUserByUsername(createUser.getEmail());

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CardRepository extends JpaRepository<Card, Long> {
@@ -46,4 +47,6 @@ public interface CardRepository extends JpaRepository<Card, Long> {
             @Param("balance") BigDecimal balance,
             Pageable pageable
     );
+
+    Optional<Card> findByIdAndUserId(Long id, Long userId);
 }

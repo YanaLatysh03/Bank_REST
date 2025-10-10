@@ -32,6 +32,10 @@ public class UserService {
             if (userRepository.findByEmail(updatedUser.email()).isPresent()) {
                 throw new IllegalStateException(ErrorCode.E_USERNAME_TAKEN_BY_ANOTHER_USER.name());
             }
+            user.setEmail(updatedUser.email());
+        }
+
+        if (updatedUser.name() != null) {
             user.setName(updatedUser.name());
         }
 

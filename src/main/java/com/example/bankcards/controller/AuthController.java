@@ -1,7 +1,7 @@
 package com.example.bankcards.controller;
 
-import com.example.bankcards.rq.AuthRequest;
-import com.example.bankcards.rq.RegisterRequest;
+import com.example.bankcards.rq.AuthRq;
+import com.example.bankcards.rq.RegisterRq;
 import com.example.bankcards.rs.AuthResponse;
 import com.example.bankcards.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,8 +22,8 @@ public class AuthController {
 
     @PostMapping("/register")
     @Operation(summary = "Регистрация пользователя")
-    public ResponseEntity<?> register(
-            @RequestBody RegisterRequest request
+    public ResponseEntity<AuthResponse> register(
+            @RequestBody RegisterRq request
     ) {
         return ResponseEntity.ok(authService.register(request));
     }
@@ -31,7 +31,7 @@ public class AuthController {
     @PostMapping("/login")
     @Operation(summary = "Авторизация пользователя")
     public ResponseEntity<AuthResponse> login(
-            @RequestBody AuthRequest request
+            @RequestBody AuthRq request
     ) {
         return ResponseEntity.ok(authService.login(request.email(), request.password()));
     }
