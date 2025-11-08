@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+//Банковские карточки пользователя
 public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
